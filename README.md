@@ -30,6 +30,14 @@ STARXR의 AI 채팅 서비스는 다음의 세 가지 입력 방식을 지원합
     - **VoiceOutput.cs**: 커스터마이징된 음성 출력 기능 관리
   - **Plugins/**: AI API 통합 플러그인 및 외부 라이브러리
 
+구조
+AIChatManager: 여러 기능을 조율하고 호출하는 중앙 컨트롤러.
+Manager: 특정 기능의 로직과 상태 관리 담당 (예: AudioPlayManager, MicManager).
+Service: 외부 통신과 비즈니스 로직 처리 담당 (예: GptCommunicationService). 
+서비스는 SDK나 API와의 직접 통신을 담당하고, 사용자에게는 노출되지 않습니다.
+
+Service: 외부 API와의 통신과 비즈니스 로직 담당.
+Manager: UI와 로직을 연결하고, 필요한 데이터를 AIChatManager로 전달.
 > **주의**: 실제 코드에는 회사의 기밀 정보나 민감한 로직이 포함되어 있어, 공개적으로는 세부 코드를 제공하지 않습니다. 필요 시 담당자에게는 세부 내용을 검토할 수 있도록 별도로 제공합니다.
 
 ---
