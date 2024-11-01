@@ -31,7 +31,7 @@ STARXR의 AI 채팅 서비스는 다음의 세 가지 입력 방식을 지원합
     - **Interfaces**: 모든 인터페이스를 한곳에 모아둬서 의존성 주입 및 SOLID 원칙에 부합하도록 설계
   - **Plugins/**: AI API 통합 플러그인 및 외부 라이브러리
 
-구조
+
 AIChatManager: 여러 기능을 조율하고 호출하는 중앙 컨트롤러.
 Manager: 특정 기능의 로직과 상태 관리 담당 (예: AudioPlayManager, MicManager), 필요한 데이터를 AIChatManager로 전달.
 Service: 외부 통신과 비즈니스 로직 처리 담당, 모든 서비스 구현체와 관련 로직 (예: GptCommunicationService). 
