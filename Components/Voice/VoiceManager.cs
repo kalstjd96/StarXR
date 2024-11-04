@@ -8,11 +8,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.Threading.Tasks;
+using Starxr.SDK.RestApiClient;
+using Starxr.SDK.AI.Voice;
 
 namespace Starxr.SDK.AI.Components
 {
-    public class VoiceManager : MonoBehaviour
+    public class VoiceManager : StarxrComponentBase
     {
+        public override string Title => "AI 채팅 목소리 관리 매니저";
+        public override string Tooltip => "AI 채팅 내 TTS(Text-to-Speech) 기능을 위한 사용자 정의 목소리를 등록하고 관리하는 기능입니다. " +
+            "이를 통해 사용자는 원하는 목소리를 등록하여 채팅 답변을 해당 목소리로 청취할 수 있습니다.";
+
         #region Constants
         private const string MIC_NOT_DETECTED = "마이크 인식이 필요합니다.";
         private const string MIC_READY = "마이크 작동 확인 완료.";
@@ -20,9 +26,15 @@ namespace Starxr.SDK.AI.Components
         private const string RECORDING_IN_PROGRESS = "녹음 중지";
         #endregion
 
-        #region Private Fields
+        #region Public Fields
+        [NonSerialized]
+        public static VoiceItem CurrentlySelectedItem;
         public Action<string> OnVoiceSelected;
+        public Action<string> OnVoiceInited;
 
+        #endregion
+
+        #region Private Fields
         private ChatUIElements.VoicePanelUI voicePanelUI;
         private ICustomVoiceService voiceService;
         private VoiceDataDto voiceDataList;
@@ -42,7 +54,7 @@ namespace Starxr.SDK.AI.Components
         private void Awake() => ServiceLocator.Register(this);
         #endregion
 
-        #region Initialization and Event Handling
+        #region 초기화, 이벤트 등록 및 해제
         public void Initialize(ChatUIElements.VoicePanelUI voicePanelUI)
         {
             this.voicePanelUI = voicePanelUI;
@@ -76,9 +88,7 @@ namespace Starxr.SDK.AI.Components
 
             ClearVoiceList();
         }
-        #endregion
 
-        #region Custom Voice 등록
         private void ResetInformation()
         {
             ResetTimer();
@@ -87,35 +97,17 @@ namespace Starxr.SDK.AI.Components
             pageIndex = 0;
         }
 
-        private async void ShowRegisterPanel()
-        {
-            ResetInformation();
-            microphoneTaskCompletionSource = new TaskCompletionSource<bool>();
-            InquiryMicrophone();
-
-            await microphoneTaskCompletionSource.Task;
-
-            TogglePanel(voicePanelUI.PanelVoiceRegisterPanel, true);
-            ToggleStepPanels();
-        }
-
-        private void SwitchPanel(int nextPageIndex)
-        {
-            if (IsValidPageIndex(nextPageIndex))
-            {
-                TogglePanel(voicePanelUI.PanelVoiceStepList[pageIndex], false);
-                pageIndex = nextPageIndex;
-                TogglePanel(voicePanelUI.PanelVoiceStepList[pageIndex], true);
-            }
-        }
-
-        private void TogglePanel(GameObject panel, bool state) => panel.SetActive(state);
-
         private void ResetTimer() => voicePanelUI.TextTimer.text = "00:00";
+        #endregion
 
+        #region 마이크 Handling
         private void InquiryMicrophone() => WebGLBridge.InquiryMicrophone();
-
-        public void OnReceiveMicrophoneList(string jsonMicList)
+        
+        /// <summary>
+        /// jslib을 통해 마이크 리스트를 받아오는 메서드
+        /// </summary>
+        /// <param name="jsonMicList"></param>
+        public void JslibReceiveMicrophoneList(string jsonMicList)
         {
             var micList = JsonUtility.FromJson<MicrophoneList>(jsonMicList);
             microphoneDevices = micList.devices;
@@ -157,6 +149,9 @@ namespace Starxr.SDK.AI.Components
             }
         }
 
+        #endregion
+
+        #region 레코딩 관리 (목소리 녹화)
         private void StartVoiceRecording()
         {
             if (isRecording)
@@ -169,6 +164,7 @@ namespace Starxr.SDK.AI.Components
             voicePanelUI.TextRecordingState.text = RECORDING_IN_PROGRESS;
             ResetTimer();
             timerCoroutine = StartCoroutine(UpdateTimer());
+            WebGLBridge.StartVoiceRecording(this.gameObject.name, selectedMicrophone);
         }
 
         private IEnumerator UpdateTimer()
@@ -186,21 +182,26 @@ namespace Starxr.SDK.AI.Components
         {
             isRecording = false;
             voicePanelUI.TextRecordingState.text = RECORDING_STOPPED;
+            voicePanelUI.ButtonNextStep2.interactable = false;
             WebGLBridge.StopVoiceRegister();
-            StopAndResetTimer();
-        }
 
-        private void StopAndResetTimer()
-        {
             if (timerCoroutine != null)
             {
                 StopCoroutine(timerCoroutine);
                 timerCoroutine = null;
             }
-            ResetTimer();
-            voicePanelUI.ButtonNextStep2.interactable = false;
+
         }
 
+        public void JslibVoiceRegister(string base64Audio)
+        {
+            voiceAudioData = base64Audio;
+            StopVoiceRecording();
+            voicePanelUI.ButtonNextStep2.interactable = true;
+        }
+        #endregion
+
+        #region 목소리 등록
         private async void CompleteVoiceRegistration()
         {
             voiceName = voicePanelUI.InputFieldVoiceName.text.Trim();
@@ -208,19 +209,6 @@ namespace Starxr.SDK.AI.Components
             TogglePanel(voicePanelUI.PanelVoiceRegisterPanel, false);
             pageIndex = 0;
         }
-
-        private void OnInputFieldValueChanged(string input)
-        {
-            voicePanelUI.ButtonSaveStep3.interactable = !string.IsNullOrEmpty(input.Trim());
-        }
-
-        private void OnVoiceRecordingComplete(string base64Audio)
-        {
-            voiceAudioData = base64Audio;
-            StopVoiceRecording();
-            voicePanelUI.ButtonNextStep2.interactable = true;
-        }
-
         private async UniTask RegisterVoice(string name, string audioData, string script)
         {
             try
@@ -235,11 +223,13 @@ namespace Starxr.SDK.AI.Components
         }
         #endregion
 
-        #region Custom Voice 조회 및 삭제, 선택
+        #region 목소리 데이터 조회 및 삭제, 선택
         public async void RetrieveVoiceList()
         {
             try
             {
+                ClearVoiceList();
+
                 voiceIndex = 0;
                 voiceDataList = await voiceService.GetVoiceList();
                 DisplayVoiceList(voiceDataList);
@@ -275,6 +265,10 @@ namespace Starxr.SDK.AI.Components
 
         private void ClearVoiceList()
         {
+            if (voicePanelUI.VoiceListContainer.childCount == 0)
+                return;
+
+            OnVoiceInited?.Invoke(null);
             foreach (Transform child in voicePanelUI.VoiceListContainer)
             {
                 Destroy(child.gameObject);
@@ -282,7 +276,44 @@ namespace Starxr.SDK.AI.Components
         }
         #endregion
 
-        #region Utility Methods
+        #region VoiceManager 내 Utility Methods
+        private void OnInputFieldValueChanged(string input)
+        {
+            voicePanelUI.ButtonSaveStep3.interactable = !string.IsNullOrEmpty(input.Trim());
+        }
+
+        private async void ShowRegisterPanel()
+        {
+            ResetInformation();
+            microphoneTaskCompletionSource = new TaskCompletionSource<bool>();
+            InquiryMicrophone();
+
+            await microphoneTaskCompletionSource.Task;
+
+            TogglePanel(voicePanelUI.PanelVoiceRegisterPanel, true);
+            ToggleStepPanels();
+        }
+
+        private void ToggleStepPanels()
+        {
+            for (int i = 0; i < voicePanelUI.PanelVoiceStepList.Count; i++)
+            {
+                TogglePanel(voicePanelUI.PanelVoiceStepList[i], i == 0);
+            }
+        }
+
+        private void SwitchPanel(int nextPageIndex)
+        {
+            if (IsValidPageIndex(nextPageIndex))
+            {
+                TogglePanel(voicePanelUI.PanelVoiceStepList[pageIndex], false);
+                pageIndex = nextPageIndex;
+                TogglePanel(voicePanelUI.PanelVoiceStepList[pageIndex], true);
+            }
+        }
+
+        private void TogglePanel(GameObject panel, bool state) => panel.SetActive(state);
+
         private bool IsValidPageIndex(int index) => index >= 0 && index < voicePanelUI.PanelVoiceStepList.Count;
         private bool IsValidMicrophoneIndex(int index) => index >= 0 && index < microphoneDevices.Count;
         private void SetButtonInteractable(bool state)
@@ -291,19 +322,7 @@ namespace Starxr.SDK.AI.Components
             voicePanelUI.ButtonNextStep2.interactable = state;
             voicePanelUI.ButtonSaveStep3.interactable = state;
         }
+
         #endregion
-
-        [Serializable]
-        public class MicrophoneDevice
-        {
-            public string label;
-            public string deviceId;
-        }
-
-        [Serializable]
-        public class MicrophoneList
-        {
-            public List<MicrophoneDevice> devices;
-        }
     }
 }
