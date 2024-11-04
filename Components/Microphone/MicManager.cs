@@ -3,10 +3,14 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 namespace Starxr.SDK.AI.Components
 {
-    public class MicManager : MonoBehaviour
+    public class MicManager : StarxrComponentBase
     {
+        public override string Title => "AI 마이크 관리 매니저";
+        public override string Tooltip => "AI 채팅 내 마이크 정보를 관리하는 매니저입니다";
+
         public event Action<string> OnRecordingComplete;
         
         private GameObject micPanel;
@@ -34,7 +38,7 @@ namespace Starxr.SDK.AI.Components
             animationHandler = new AnimatorHandler(micAnimator, parameterName);
         }
 
-        public void RegisterEvents()
+        public void RegisterUIEventHandlers()
         {
             if (isRegisterEvent)
                 return;
@@ -44,10 +48,7 @@ namespace Starxr.SDK.AI.Components
             isRegisterEvent = true;
         }
 
-        /// <summary>
-        /// 이벤트 해제 (명시적으로 호출)
-        /// </summary>
-        public void UnregisterEvents()
+        public void UnregisterUIEventHandlers()
         {
             if (!isRegisterEvent)
                 return;
@@ -73,7 +74,7 @@ namespace Starxr.SDK.AI.Components
             WebGLBridge.StartRecording(this.gameObject.name);
         }
 
-        public void OnVolumeThresholdExceeded(string isExceeded)
+        public void JslibVolumeCheck(string isExceeded)
         {
             if(isExceeded == "true")
             {
@@ -85,11 +86,14 @@ namespace Starxr.SDK.AI.Components
             }
         }
 
-        public void OnRecordingCompleteHandler(object base64Audio)
+        /// <summary>
+        /// jslib에서 호출하는 메서드 
+        /// </summary>
+        /// <param name="base64Audio"></param>
+        public void JslibRecordingComplete(object base64Audio)
         {
             string audioJson = WebGLBridge.OnRecordingComplete(base64Audio.ToString());
             OnRecordingComplete?.Invoke(audioJson);
         }
     }
-
 }
