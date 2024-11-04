@@ -1,12 +1,17 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Starxr.SDK.AI.Components
 {
-    public class ChatUIElements : MonoBehaviour
+    public class ChatUIElements : StarxrComponentBase
     {
+        public override string Title => "AI 채팅 UI변수 관리 매니저";
+        public override string Tooltip => "AI 채팅 내 TTS 기능으로 사용하고자 하는 목소리를 등록하여" +
+            "답변을 해당 목소리로 들을 수 있는 기눙, 목소리 정보를 관리하는 매니저입니다";
+
         [Serializable]
         public class ChatPanelUI
         {
@@ -60,23 +65,31 @@ namespace Starxr.SDK.AI.Components
 
             [Header("음성 등록 패널")]
             public GameObject PanelVoiceRegisterPanel;
-            public GameObject PanelVoiceStep1;
-            public GameObject PanelVoiceStep2;               
-            public GameObject PanelVoiceStep3;               
+            public List<GameObject> PanelVoiceStepList;     
 
             [Header("Buttons")]
             public Button ButtonVoiceRegister;
-            public Button ButtonStartRecording;
-            public Button ButtonNextStep1;
-            public Button ButtonNextStep2;
-            public Button ButtonSaveStep3;
             public Button ButtonCloseChatPanel;
+
+            // Step 1 페이지 
+            public Button ButtonCheckVoice;
+            public Button ButtonNextStep1;
             public TMP_Dropdown MicrophoneDropdown;
+
+            //Step 2 페이지
+            public Button ButtonStartRecording;
+            public Button ButtonNextStep2;
+
+            //Step 3 페이지
+            public Button ButtonSaveStep3;
 
             [Header("Text UI")]
             public TextMeshProUGUI TextTimer;
             public TextMeshProUGUI TextRecordingState;
+            public TextMeshProUGUI TextMicState;
+            public TextMeshProUGUI TextVoiceScript;
             public TMP_InputField InputFieldVoiceName;
+            public Image MicImage;
         }
 
         public ChatPanelUI ChatPanelUIGroup;
