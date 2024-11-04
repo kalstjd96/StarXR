@@ -7,8 +7,11 @@ using UnityEngine.UI;
 
 namespace Starxr.SDK.AI.Components
 {
-    public class ChatUIManager : MonoBehaviour
+    public class ChatUIManager : StarxrComponentBase
     {
+        public override string Title => "AI 채팅UI 관리 매니저";
+        public override string Tooltip => "AI 채팅 내 사용되는 UI정보를 관리하는 매니저입니다";
+
         //채팅 패널 관련
         private GameObject chatRootPanel;
         private Transform chatContent;
@@ -69,7 +72,7 @@ namespace Starxr.SDK.AI.Components
             isHeightIncreased = false;
         }
 
-        public void RegisterEvents()
+        public void RegisterUIEventHandlers()
         {
             if (isRegisterEvent)
                 return;
@@ -99,7 +102,7 @@ namespace Starxr.SDK.AI.Components
         /// <summary>
         /// 이벤트 해제 (명시적으로 호출)
         /// </summary>
-        public void UnregisterEvents()
+        public void UnregisterUIEventHandlers()
         {
             if (!isRegisterEvent)
                 return;
@@ -241,18 +244,6 @@ namespace Starxr.SDK.AI.Components
             LayoutRebuilder.ForceRebuildLayoutImmediate(inputFieldContentRect);
             float height = inputFieldContentRect.sizeDelta.y;
             containerRect.sizeDelta = new Vector2(containerRect.sizeDelta.x, Mathf.Clamp(height, MinHeight, MaxHeight));
-        }
-
-        /// <summary>
-        /// gpt에 메시지 전달
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="imageData"></param>
-        public void SendMessageGPT(string message, string imageData = null)
-        {
-            AddUserMessage(message, imageData);
-            ClearImages();
-            UpdateContainerHeight();
         }
     }
 }
