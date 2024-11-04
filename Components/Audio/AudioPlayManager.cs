@@ -4,8 +4,11 @@ using System;
 using UnityEngine;
 namespace Starxr.SDK.AI.Components
 {
-    public class AudioPlayManager : MonoBehaviour
+    public class AudioPlayManager : StarxrComponentBase
     {
+        public override string Title => "AI 채팅 오디오 관리 매니저";
+        public override string Tooltip => "AI 채팅 내 오디오 정보를 관리하는 매니저입니다";
+
         public AudioSource AudioSource { get; private set; }
 
         private void Awake()
