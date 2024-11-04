@@ -5,8 +5,12 @@ using UnityEngine.UI;
 
 namespace Starxr.SDK.AI.Components
 {
-    public class ImageUploadManager : MonoBehaviour
+    public class ImageUploadManager : StarxrComponentBase
     {
+        public override string Title => "AI 채팅 이미지 관리 매니저";
+        public override string Tooltip => "AI 채팅 내 이미지 정보를 관리하는 매니저로" +
+            "입력창 및 채팅창에 이미지를 나타내고 서버에 이미지 정보를 전달하는 역할을 합니다.";
+
         public string ServerImageData { get; private set; } //서버에 보낼 이미지 Data
         public string InternalImageData { get; private set; } //내부에 사용될 이미지 Data
         public event Action<Sprite> OnImageUploaded;
@@ -24,7 +28,7 @@ namespace Starxr.SDK.AI.Components
             this.imageUploadButton = imageUploadButton;
         }
 
-        public void RegisterEvents()
+        public void RegisterUIEventHandlers()
         {
             if (isRegisterEvent)
                 return;
@@ -35,7 +39,7 @@ namespace Starxr.SDK.AI.Components
         /// <summary>
         /// 이벤트 해제 (명시적으로 호출)
         /// </summary>
-        public void UnregisterEvents()
+        public void UnregisterUIEventHandlers()
         {
             if (!isRegisterEvent)
                 return;
@@ -49,7 +53,7 @@ namespace Starxr.SDK.AI.Components
             WebGLBridge.OpenFileExplorer();
         }
 
-        public void OnImageUploadedHandler(string base64Data)
+        public void JslibImageUpload(string base64Data)
         {
             ServerImageData = base64Data;
             InternalImageData = base64Data.Split(',')[1];
