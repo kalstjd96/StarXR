@@ -23,7 +23,7 @@ STARXR 내 AI 채팅 서비스는 다음의 세 가지 입력 방식을 지원�
 ✔️ 사용자 음성 커스터마이징 기능 구현<br>
 
 🔹 시스템 설계 및 최적화<br>
-✔️ WebGL 환경 최적화 (메모리 및 성능 고려)<br>
+> ✔️ WebGL 환경 최적화 (메모리 및 성능 고려)<br>
 ✔️ 코드 구조 설계 (SOLID 원칙 적용, 인터페이스 기반 구조화)<br>
 ✔️ AI API 및 STT 라이브러리 연동<br>
 
@@ -34,29 +34,31 @@ STARXR 내 AI 채팅 서비스는 다음의 세 가지 입력 방식을 지원�
 - **커스터마이징된 음성 출력**: 유명인 또는 개인의 목소리를 등록해 답변을 해당 목소리로 청취 가능
 - **WebGL 플랫폼 최적화**: 웹 브라우저 환경에서 원활하게 동작
 
-🔹 멀티 입력 방식 지원 → 텍스트, 음성(STT), 이미지를 통한 질문 가능
-🔹 커스텀 음성 응답 → 유명인, 개인 목소리 등록 후 AI 음성으로 출력
-🔹 WebGL 환경 최적화 → 웹 브라우저에서도 원활하게 실행
-🔹 AI API 연동 → 텍스트 분석 및 자연스러운 대화 제공
+🔹 멀티 입력 방식 지원 → 텍스트, 음성(STT), 이미지를 통한 질문 가능 <br>
+🔹 커스텀 음성 응답 → 유명인, 개인 목소리 등록 후 AI 음성으로 출력 <br>
+🔹 WebGL 환경 최적화 → 웹 브라우저에서도 원활하게 실행 <br>
+🔹 AI API 연동 → 텍스트 분석 및 자연스러운 대화 제공 <br>
 
 ---
 🛠️ 코드 구조 (Code Structure)
 SOLID 원칙을 적용하여, 유지보수성과 확장성을 고려한 설계
 
-📂 Scripts/
+📦 STARXR <br>
+├── 📁 Scripts # 주요 기능을 담당하는 C# 스크립트 <br>
+  &nbsp;&nbsp;&nbsp;├── 📁 AI <br>
+  &nbsp;&nbsp;&nbsp;├── 📁 Components/ → 각 기능별 하위 모듈 (Managers, Items) <br> 
+  &nbsp;&nbsp;&nbsp;├── 📁 Core/ → 공통 설정 및 핵심 로직 <br> 
+  &nbsp;&nbsp;&nbsp;├── 📁 Data/ → 데이터 전송 객체(DTO), 모델 관리 <br> 
+  &nbsp;&nbsp;&nbsp;├── 📁 Interfaces/ → 인터페이스 관리 (의존성 주입을 위해 분리) <br> 
+  &nbsp;&nbsp;&nbsp;├── 📁 Plugins/ → AI API 및 외부 라이브러리 통합 <br>
 
-📁 AI/
-📂 Components/ → 각 기능별 하위 모듈 (Managers, Items)
-📂 Core/ → 공통 설정 및 핵심 로직
-📂 Data/ → 데이터 전송 객체(DTO), 모델 관리
-📂 Interfaces/ → 인터페이스 관리 (의존성 주입을 위해 분리)
-📂 Plugins/ → AI API 및 외부 라이브러리 통합
+  
 📌 주요 클래스 설명
 
-AIChatManager → 중앙 컨트롤러, 여러 기능을 조율하고 호출
-Manager (예: AudioPlayManager, MicManager) → 각 기능별 상태 및 로직 관리
-Service (예: GptCommunicationService) → 비즈니스 로직 및 외부 API 통신 담당
-ServiceImpl → 실제 SDK/API 통신을 담당, 사용자는 직접 접근하지 않음
+AIChatManager → 중앙 컨트롤러, 여러 기능을 조율하고  <br>
+Manager (예: AudioPlayManager, MicManager) → 각 기능별 상태 및 로직 관리 <br>
+Service (예: GptCommunicationService) → 비즈니스 로직 및 외부 API 통신 담당 <br>
+ServiceImpl → 실제 SDK/API 통신을 담당, 사용자는 직접 접근하지 않음 <br>
 
 ## 🛠️ 코드 구성 (Code Structure)
 프로젝트는 다음과 같은 구조로 구성되어 있습니다:
