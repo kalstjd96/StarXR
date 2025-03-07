@@ -55,7 +55,10 @@ SOLID 원칙을 적용하여, 유지보수성과 확장성을 고려한 설계
   
 📌 주요 클래스 설명
 
-AIChatManager → 중앙 컨트롤러, 여러 기능을 조율하고  <br>
+AIChatManager → 중앙 컨트롤러, 여러 기능을 조율하고 
+➡ **📂 전체 코드 보기**: [ProjectManager.cs (L53-L59)](https://github.com/kalstjd96/StarXR/blob/main/Components/Chat/AIChatServiceManager.cs#L53-L59)
+<br>
+
 Manager (예: AudioPlayManager, MicManager) → 각 기능별 상태 및 로직 관리 <br>
 Service (예: GptCommunicationService) → 비즈니스 로직 및 외부 API 통신 담당 <br>
 ServiceImpl → 실제 SDK/API 통신을 담당, 사용자는 직접 접근하지 않음 <br>
