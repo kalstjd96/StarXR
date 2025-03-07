@@ -55,13 +55,25 @@ SOLID 원칙을 적용하여, 유지보수성과 확장성을 고려한 설계
   
 📌 주요 클래스 설명
 
-AIChatManager → 중앙 컨트롤러, 여러 기능을 조율하고 
-➡ **📂 전체 코드 보기**: [ProjectManager.cs (L53-L59)](https://github.com/kalstjd96/StarXR/blob/main/Components/Chat/AIChatServiceManager.cs#L53-L59)
+AIChatServiceManager → 중앙 컨트롤러, 여러 기능을 조율하고 <br>
+➡ **📂 전체 코드 보기**: [AIChatServiceManager.cs](https://github.com/kalstjd96/StarXR/blob/main/Components/Chat/AIChatServiceManager.cs)
 <br>
 
 Manager (예: AudioPlayManager, MicManager) → 각 기능별 상태 및 로직 관리 <br>
+➡ **📂 전체 코드 보기**: [MicManager.cs (L70-L97)](https://github.com/kalstjd96/StarXR/blob/main/Components/Microphone/MicManager.cs#L70-L97)
+<br>
+
+WebGLBridge  → WebGL 환경에서는 Unity의 Microphone 클래스를 사용할 수 없기 때문에, 브라우저의 네이티브 API와 상호작용하기 위해 JavaScript 라이브러리(.jslib)를 활용하여 마이크 입력을 처리  <br>
+➡ **📂 전체 코드 보기**: [WebGLBridge.cs](https://github.com/kalstjd96/StarXR/blob/main/Core/WebGLBridge.cs)
+<br>
+
 Service (예: GptCommunicationService) → 비즈니스 로직 및 외부 API 통신 담당 <br>
+➡ **📂 전체 코드 보기**: [GptCommunicationService.cs](https://github.com/kalstjd96/StarXR/blob/main/Services/GptCommunicationService.cs)
+<br>
+
 ServiceImpl → 실제 SDK/API 통신을 담당, 사용자는 직접 접근하지 않음 <br>
+➡ **📂 전체 코드 보기**: [GptCommunicationServiceImpl.cs](https://github.com/kalstjd96/StarXR/blob/main/Services/GptCommunicationServiceImpl.cs)
+<br>
 
 ## 🛠️ 코드 구성 (Code Structure)
 프로젝트는 다음과 같은 구조로 구성되어 있습니다:
