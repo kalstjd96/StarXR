@@ -33,11 +33,7 @@ STARXR 내 AI 채팅 서비스는 다음의 세 가지 입력 방식을 지원�
 - **다양한 입력 방식 지원**: 텍스트, 음성(STT), 이미지 기반 질문 가능
 - **커스터마이징된 음성 출력**: 유명인 또는 개인의 목소리를 등록해 답변을 해당 목소리로 청취 가능
 - **WebGL 플랫폼 최적화**: 웹 브라우저 환경에서 원활하게 동작
-
-🔹 멀티 입력 방식 지원 → 텍스트, 음성(STT), 이미지를 통한 질문 가능 <br>
-🔹 커스텀 음성 응답 → 유명인, 개인 목소리 등록 후 AI 음성으로 출력 <br>
-🔹 WebGL 환경 최적화 → 웹 브라우저에서도 원활하게 실행 <br>
-🔹 AI API 연동 → 텍스트 분석 및 자연스러운 대화 제공 <br>
+- **AI API 연동**: 자연스러운 대화 제공
 
 ---
 🛠️ 코드 구조 (Code Structure)
@@ -75,18 +71,6 @@ WebGLBridge  → WebGL 환경에서는 Unity의 Microphone 클래스를 사용�
 ➡ **📂 전체 코드 보기**: [WebGLBridge.cs](https://github.com/kalstjd96/StarXR/blob/main/Core/WebGLBridge.cs)
 <br>
 
-### 🎤 WebGL 환경에서 마이크 입력 처리  
-- Unity WebGL에서는 `Microphone` API를 사용할 수 없음  
-- 이를 해결하기 위해 **JavaScript (`.jslib`)를 활용하여 브라우저의 마이크 입력을 직접 처리**  
-- `WebGLBridge.cs`를 통해 Unity와 JavaScript 간의 **데이터 교환을 수행**  
-
-📂 **관련 파일**
-- **📄 WebGLBridge.cs** → Unity ↔ JavaScript 데이터 브리지 역할
-- **📄 WebMicInput.jslib** → 브라우저에서 마이크 입력을 받아 Unity로 전달
-
-
-
-
 
 ## 🛠️ 코드 구성 (Code Structure)
 프로젝트는 다음과 같은 구조로 구성되어 있습니다:
@@ -99,3 +83,12 @@ WebGLBridge  → WebGL 환경에서는 Unity의 Microphone 클래스를 사용�
   - **Plugins/**: AI API 통합 플러그인 및 외부 라이브러리
 
 ---
+
+### 🎤 WebGL 환경에서 마이크 입력 처리  
+- Unity WebGL에서는 `Microphone` API를 사용할 수 없음  
+- 이를 해결하기 위해 **JavaScript (`.jslib`)를 활용하여 브라우저의 마이크 입력을 직접 처리**  
+- `WebGLBridge.cs`를 통해 Unity와 JavaScript 간의 **데이터 교환을 수행**  
+
+📂 **관련 파일**
+- **📄 WebGLBridge.cs** → Unity ↔ JavaScript 데이터 브리지 역할
+- **📄 WebMicInput.jslib** → 브라우저에서 마이크 입력을 받아 Unity로 전달
