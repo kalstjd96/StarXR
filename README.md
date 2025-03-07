@@ -63,10 +63,6 @@ Manager (예: AudioPlayManager, MicManager) → 각 기능별 상태 및 로직 
 ➡ **📂 전체 코드 보기**: [MicManager.cs (L70-L97)](https://github.com/kalstjd96/StarXR/blob/main/Components/Microphone/MicManager.cs#L70-L97)
 <br>
 
-WebGLBridge  → WebGL 환경에서는 Unity의 Microphone 클래스를 사용할 수 없기 때문에, 브라우저의 네이티브 API와 상호작용하기 위해 JavaScript 라이브러리(.jslib)를 활용하여 마이크 입력을 처리  <br>
-➡ **📂 전체 코드 보기**: [WebGLBridge.cs](https://github.com/kalstjd96/StarXR/blob/main/Core/WebGLBridge.cs)
-<br>
-
 Service (예: GptCommunicationService) → 비즈니스 로직 및 외부 API 통신 담당 <br>
 ➡ **📂 전체 코드 보기**: [GptCommunicationService.cs](https://github.com/kalstjd96/StarXR/blob/main/Services/GptCommunicationService.cs)
 <br>
@@ -74,6 +70,23 @@ Service (예: GptCommunicationService) → 비즈니스 로직 및 외부 API �
 ServiceImpl → 실제 SDK/API 통신을 담당, 사용자는 직접 접근하지 않음 <br>
 ➡ **📂 전체 코드 보기**: [GptCommunicationServiceImpl.cs](https://github.com/kalstjd96/StarXR/blob/main/Services/GptCommunicationServiceImpl.cs)
 <br>
+
+WebGLBridge  → WebGL 환경에서는 Unity의 Microphone 클래스를 사용할 수 없기 때문에, 브라우저의 네이티브 API와 상호작용하기 위해 JavaScript 라이브러리(.jslib)를 활용하여 마이크 입력을 처리  <br>
+➡ **📂 전체 코드 보기**: [WebGLBridge.cs](https://github.com/kalstjd96/StarXR/blob/main/Core/WebGLBridge.cs)
+<br>
+
+### 🎤 WebGL 환경에서 마이크 입력 처리  
+- Unity WebGL에서는 `Microphone` API를 사용할 수 없음  
+- 이를 해결하기 위해 **JavaScript (`.jslib`)를 활용하여 브라우저의 마이크 입력을 직접 처리**  
+- `WebGLBridge.cs`를 통해 Unity와 JavaScript 간의 **데이터 교환을 수행**  
+
+📂 **관련 파일**
+- **📄 WebGLBridge.cs** → Unity ↔ JavaScript 데이터 브리지 역할
+- **📄 WebMicInput.jslib** → 브라우저에서 마이크 입력을 받아 Unity로 전달
+
+
+
+
 
 ## 🛠️ 코드 구성 (Code Structure)
 프로젝트는 다음과 같은 구조로 구성되어 있습니다:
